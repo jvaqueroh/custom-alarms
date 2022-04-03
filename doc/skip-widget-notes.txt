@@ -1,0 +1,19 @@
+References and resources
+	> floating widget: https://www.youtube.com/watch?v=UwnhGkahoao
+
+App behaviour
+	State machine - states tree
+		root
+			|- *disabled
+			|- enabled
+				|- set
+				|	|- preAlarmSet
+				|	|- normalSet
+				|- fired
+				|- preAlarmFired
+				|- snoozed
+				|- preAlarmSnoozed
+				|- skipping
+			|- deleted
+			|- rescheduleTransition
+			|- enableTransition
