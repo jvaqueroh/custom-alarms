@@ -5,6 +5,7 @@
     <string name="skip_duration_title">Hopp over alarmvarsel</string>
     <string-array name="skip_duration_entries">
         <item>Av</item>
+        <item>2 minutter</item>
         <item>15 minutter</item>
         <item>30 minutter</item>
         <item>1 time</item>

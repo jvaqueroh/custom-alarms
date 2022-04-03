@@ -5,6 +5,7 @@
     <string name="skip_duration_title">Notifica "Salta sveglia"</string>
     <string-array name="skip_duration_entries">
         <item>Disattivato</item>
+        <item>2 minuti</item>
         <item>15 minuti</item>
         <item>30 minuti</item>
         <item>1 ora</item>

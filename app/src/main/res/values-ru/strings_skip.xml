@@ -5,6 +5,7 @@
     <string name="skip_duration_title">Уведомление  "Пропустить будильник"</string>
     <string-array name="skip_duration_entries">
         <item>Выкл.</item>
+        <item>2 минут</item>
         <item>15 минут</item>
         <item>30 минут</item>
         <item>1 час</item>

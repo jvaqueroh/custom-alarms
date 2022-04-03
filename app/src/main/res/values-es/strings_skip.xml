@@ -5,6 +5,7 @@
     <string name="skip_duration_title">Notificación "Saltar alarma"</string>
     <string-array name="skip_duration_entries">
         <item>Apagado</item>
+        <item>2 minutos</item>
         <item>15 minutos</item>
         <item>30 minutos</item>
         <item>1 hora</item>

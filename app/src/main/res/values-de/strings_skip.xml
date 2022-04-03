@@ -5,6 +5,7 @@
     <string name="skip_duration_title">Wecker überspringen Benachrichtigung</string>
     <string-array name="skip_duration_entries">
         <item>Aus</item>
+        <item>2 Minuten</item>
         <item>15 Minuten</item>
         <item>30 minuten</item>
         <item>1 Stunde</item>
