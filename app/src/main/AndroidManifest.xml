@@ -86,6 +86,8 @@
             android:name=".background.AlertServiceWrapper"
             android:description="@string/alarm_klaxon_service_desc"
             android:exported="false" />
+        <service android:name=".background.SkipAlarmWidgetService"
+            android:enabled="true"/>
 
         <!-- Model -->
         <receiver
