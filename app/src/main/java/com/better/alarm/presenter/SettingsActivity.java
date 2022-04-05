@@ -19,52 +19,80 @@ package com.better.alarm.presenter;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.better.alarm.R;
 import com.better.alarm.configuration.AlarmApplication;
 import com.better.alarm.configuration.InjectKt;
 
-/** Settings for the Alarm Clock. */
+/**
+ * Settings for the Alarm Clock.
+ */
 public class SettingsActivity extends AppCompatActivity {
-  private final DynamicThemeHandler dynamicThemeHandler =
-      InjectKt.globalInject(DynamicThemeHandler.class).getValue();
+    private final DynamicThemeHandler dynamicThemeHandler =
+            InjectKt.globalInject(DynamicThemeHandler.class).getValue();
 
-  @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    AlarmApplication.startOnce(getApplication());
-    setTheme(dynamicThemeHandler.defaultTheme());
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.settings_activity);
-    if (!getResources().getBoolean(R.bool.isTablet)) {
-      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        AlarmApplication.startOnce(getApplication());
+        setTheme(dynamicThemeHandler.defaultTheme());
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.settings_activity);
+        if (!getResources().getBoolean(R.bool.isTablet)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+        getPermission();
     }
-  }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    return true;
-  }
+    public void getPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                !Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 1);
+        }
+    }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == android.R.id.home) {
-      goBack();
-      return true;
-    } else return false;
-  }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (requestCode == 1 && !Settings.canDrawOverlays(SettingsActivity.this)) {
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
-  private void goBack() {
-    // This is called when the Home (Up) button is pressed
-    // in the Action Bar.
-    Intent parentActivityIntent = new Intent(this, AlarmsListActivity.class);
-    // parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-    // Intent.FLAG_ACTIVITY_NEW_TASK);
-    startActivity(parentActivityIntent);
-    finish();
-  }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            goBack();
+            return true;
+        } else return false;
+    }
+
+    private void goBack() {
+        // This is called when the Home (Up) button is pressed
+        // in the Action Bar.
+        Intent parentActivityIntent = new Intent(this, AlarmsListActivity.class);
+        // parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+        // Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(parentActivityIntent);
+        finish();
+    }
 }
