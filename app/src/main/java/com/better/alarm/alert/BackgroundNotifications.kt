@@ -21,11 +21,12 @@ package com.better.alarm.alert
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.content.ServiceConnection
+import android.os.IBinder
 import android.text.format.DateFormat
-import com.better.alarm.BuildConfig
 import com.better.alarm.CHANNEL_ID
 import com.better.alarm.R
 import com.better.alarm.background.Event
@@ -50,6 +51,7 @@ class BackgroundNotifications(
     private val prefs: Prefs,
     private val store: Store
 ) {
+
     init {
         store.events.subscribeForever { event ->
             when (event) {
@@ -60,7 +62,7 @@ class BackgroundNotifications(
                 is Event.SnoozedEvent -> onSnoozed(event.id, event.calendar)
                 is Event.Autosilenced -> onSoundExpired(event.id)
                 is Event.ShowSkip -> onShowSkip(event.id)
-                is Event.HideSkip -> nm.cancel(SKIP_NOTIFICATION + event.id)
+                is Event.HideSkip -> onHideSkip(event.id)
             }
         }
     }
@@ -178,7 +180,35 @@ class BackgroundNotifications(
             nm.notify(SKIP_NOTIFICATION + id, notification)
 
             Intent(mContext, SkipAlarmWidgetService::class.java)
-                .also { mContext.startService(it) }
+                .also { intent ->
+                    mContext.startService(intent)
+                    mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+                }
+        }
+    }
+
+    private fun onHideSkip(id: Int) {
+        nm.cancel(SKIP_NOTIFICATION + id)
+        if(mBound) {
+            mContext.unbindService(connection)
+            mService.stopSelf()
+        }
+    }
+
+    private lateinit var mService: SkipAlarmWidgetService
+    private var mBound: Boolean = false
+
+    /** Defines callbacks for service binding, passed to bindService()  */
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as SkipAlarmWidgetService.LocalBinder
+            mService = binder.getService()
+            mBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
         }
     }
 
