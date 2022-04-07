@@ -49,10 +49,20 @@ class SkipAlarmWidgetService : Service() {
         layoutParams.x = 0
         layoutParams.y = 300
         val widgetTextView = widgetFloatingView.findViewById<TextView>(R.id.text_widget)
+        val alarmId = intent!!.getIntExtra(Intents.EXTRA_ID, -1)
+        val alarmLabel = intent.getStringExtra(Intents.EXTRA_LABEL)
+        var widgetText = getString(R.string.skip)
+        if(!alarmLabel.isNullOrBlank()){
+            widgetText += "\n" + alarmLabel
+        }
+        widgetTextView.setText(widgetText)
         widgetTextView.setOnClickListener{
             val pendingSkip =
                 PresentationToModelIntents.createPendingIntent(
-                    this, PresentationToModelIntents.ACTION_REQUEST_SKIP, intent!!.getIntExtra(Intents.EXTRA_ID, -1)
+                    this,
+                    PresentationToModelIntents.ACTION_REQUEST_SKIP,
+                    alarmId,
+                    widgetText
                 )
             pendingSkip.send()
         }

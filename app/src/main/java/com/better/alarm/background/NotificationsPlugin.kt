@@ -53,10 +53,10 @@ class NotificationsPlugin(
     val pendingNotify = PendingIntent.getActivity(mContext, alarm.id, notify, 0)
     val pendingSnooze =
         PresentationToModelIntents.createPendingIntent(
-            mContext, PresentationToModelIntents.ACTION_REQUEST_SNOOZE, alarm.id)
+            mContext, PresentationToModelIntents.ACTION_REQUEST_SNOOZE, alarm.id, alarm.label)
     val pendingDismiss =
         PresentationToModelIntents.createPendingIntent(
-            mContext, PresentationToModelIntents.ACTION_REQUEST_DISMISS, alarm.id)
+            mContext, PresentationToModelIntents.ACTION_REQUEST_DISMISS, alarm.id, alarm.label)
 
     val notification =
         mContext.notificationBuilder(CHANNEL_ID_HIGH_PRIO) {

@@ -78,12 +78,12 @@ class BackgroundNotifications(
                 }
                 .let { PendingIntent.getActivity(mContext, id, it, 0) }
 
+        val label = alarmsManager.getAlarm(id)?.labelOrDefault ?: ""
+
         val pendingDismiss =
             PresentationToModelIntents.createPendingIntent(
-                mContext, PresentationToModelIntents.ACTION_REQUEST_DISMISS, id
+                mContext, PresentationToModelIntents.ACTION_REQUEST_DISMISS, id, label
             )
-
-        val label = alarmsManager.getAlarm(id)?.labelOrDefault ?: ""
 
         val contentText: String =
             alarmsManager.getAlarm(id)?.let {
@@ -147,14 +147,14 @@ class BackgroundNotifications(
     }
 
     private fun onShowSkip(id: Int) {
+        val label = alarmsManager.getAlarm(id)?.labelOrDefault ?: ""
+
         val pendingSkip =
             PresentationToModelIntents.createPendingIntent(
-                mContext, PresentationToModelIntents.ACTION_REQUEST_SKIP, id
+                mContext, PresentationToModelIntents.ACTION_REQUEST_SKIP, id, label
             )
 
         alarmsManager.getAlarm(id)?.run {
-            val label: String = labelOrDefault
-
             val notification =
                 mContext.notificationBuilder(CHANNEL_ID) {
                     setAutoCancel(true)
@@ -182,6 +182,7 @@ class BackgroundNotifications(
             Intent(mContext, SkipAlarmWidgetService::class.java)
                 .also { intent ->
                     intent.putExtra(Intents.EXTRA_ID, id)
+                    intent.putExtra(Intents.EXTRA_LABEL, label)
                     mContext.startService(intent)
                     mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
                 }

@@ -15,9 +15,10 @@ public class PresentationToModelIntents {
   public static final String ACTION_REQUEST_SKIP =
       BuildConfig.APPLICATION_ID + ".model.interfaces.ServiceIntents.ACTION_REQUEST_SKIP";
 
-  public static PendingIntent createPendingIntent(Context context, String action, int id) {
+  public static PendingIntent createPendingIntent(Context context, String action, int id, String label) {
     Intent intent = new Intent(action);
     intent.putExtra(Intents.EXTRA_ID, id);
+    intent.putExtra(Intents.EXTRA_LABEL, label);
     intent.setClass(context, AlarmsReceiver.class);
     return PendingIntent.getBroadcast(context, id, intent, 0);
   }

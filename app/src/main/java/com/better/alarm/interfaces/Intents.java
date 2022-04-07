@@ -41,6 +41,7 @@ public interface Intents {
 
   /** Key of the AlarmCore attached as a parceble extra */
   public static final String EXTRA_ID = "intent.extra.alarm";
+  public static final String EXTRA_LABEL = "intent.extra.alarm_name";
 
   public static final String ACTION_MUTE = BuildConfig.APPLICATION_ID + ".ACTION_MUTE";
 
