@@ -25,6 +25,7 @@ ToDo list
     [ ] Allow the user to move the widget
     [ ] Allow the user to close the widget without skipping the alarm
     [ ] Refactor my code
+        > TESTS!!!
         > Alarm label in skip widget hack
         > Intents use
     [ ] Show skip notification in the lock screen
