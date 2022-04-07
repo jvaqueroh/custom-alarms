@@ -18,6 +18,7 @@
             android:textStyle="bold"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:background="@drawable/back_circle"/>
+            android:background="@drawable/back_circle"
+            android:clickable="true"/>
     </RelativeLayout>
 </RelativeLayout>

@@ -10,7 +10,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import com.better.alarm.R
+import com.better.alarm.interfaces.Intents
+import com.better.alarm.interfaces.PresentationToModelIntents
 
 class SkipAlarmWidgetService : Service() {
     private val binder = LocalBinder()
@@ -45,6 +48,14 @@ class SkipAlarmWidgetService : Service() {
         layoutParams.gravity = Gravity.TOP or Gravity.END
         layoutParams.x = 0
         layoutParams.y = 300
+        val widgetTextView = widgetFloatingView.findViewById<TextView>(R.id.text_widget)
+        widgetTextView.setOnClickListener{
+            val pendingSkip =
+                PresentationToModelIntents.createPendingIntent(
+                    this, PresentationToModelIntents.ACTION_REQUEST_SKIP, intent!!.getIntExtra(Intents.EXTRA_ID, -1)
+                )
+            pendingSkip.send()
+        }
 
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         windowManager.apply {

@@ -181,6 +181,7 @@ class BackgroundNotifications(
 
             Intent(mContext, SkipAlarmWidgetService::class.java)
                 .also { intent ->
+                    intent.putExtra(Intents.EXTRA_ID, id)
                     mContext.startService(intent)
                     mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
                 }
