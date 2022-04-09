@@ -184,33 +184,33 @@ class BackgroundNotifications(
                     intent.putExtra(Intents.EXTRA_ID, id)
                     intent.putExtra(Intents.EXTRA_LABEL, label)
                     mContext.startService(intent)
-                    mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+                    mContext.bindService(intent, skipAlarmWidgetServiceConnection, Context.BIND_AUTO_CREATE)
                 }
         }
     }
 
+    private lateinit var mSkipAlarmWidgetService: SkipAlarmWidgetService
+    private var mSkipAlarmWidgetServiceBound: Boolean = false
+
     private fun onHideSkip(id: Int) {
         nm.cancel(SKIP_NOTIFICATION + id)
-        if(mBound) {
-            mContext.unbindService(connection)
-            mService.stopSelf()
+        if(mSkipAlarmWidgetServiceBound) {
+            mContext.unbindService(skipAlarmWidgetServiceConnection)
+            mSkipAlarmWidgetService.stopSelf()
         }
     }
 
-    private lateinit var mService: SkipAlarmWidgetService
-    private var mBound: Boolean = false
-
     /** Defines callbacks for service binding, passed to bindService()  */
-    private val connection = object : ServiceConnection {
+    private val skipAlarmWidgetServiceConnection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             val binder = service as SkipAlarmWidgetService.LocalBinder
-            mService = binder.getService()
-            mBound = true
+            mSkipAlarmWidgetService = binder.getService()
+            mSkipAlarmWidgetServiceBound = true
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
-            mBound = false
+            mSkipAlarmWidgetServiceBound = false
         }
     }
 
