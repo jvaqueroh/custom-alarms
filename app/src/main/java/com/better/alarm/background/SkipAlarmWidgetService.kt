@@ -7,7 +7,6 @@ import android.graphics.PixelFormat
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.core.view.GestureDetectorCompat
@@ -38,7 +37,28 @@ class SkipAlarmWidgetService : Service() {
             layoutFlag = WindowManager.LayoutParams.TYPE_PHONE
         }
 
+        val layoutParams = setupLayoutParams()
+        setupWidgetView(layoutParams)
+
+        val alarmLabel = intent!!.getStringExtra(Intents.EXTRA_LABEL)
+        setupWidgetText(alarmLabel)
+
+        val alarmId = intent.getIntExtra(Intents.EXTRA_ID, -1)
+        setupTouchAndDrag(layoutParams, alarmId)
+
+        return START_STICKY
+    }
+
+    private fun setupWidgetView(layoutParams: WindowManager.LayoutParams) {
         widgetFloatingView = LayoutInflater.from(this).inflate(R.layout.skip_widget, null)
+        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+        windowManager.apply {
+            addView(widgetFloatingView, layoutParams)
+        }
+        widgetFloatingView.visibility = View.VISIBLE
+    }
+
+    private fun setupLayoutParams(): WindowManager.LayoutParams {
         val layoutParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -49,32 +69,30 @@ class SkipAlarmWidgetService : Service() {
         layoutParams.gravity = Gravity.TOP or Gravity.END
         layoutParams.x = 0
         layoutParams.y = 300
-        val widgetTextView = widgetFloatingView.findViewById<TextView>(R.id.text_widget)
-        val alarmId = intent!!.getIntExtra(Intents.EXTRA_ID, -1)
-        val alarmLabel = intent.getStringExtra(Intents.EXTRA_LABEL)
+        return layoutParams
+    }
+
+    private fun setupWidgetText(alarmLabel: String?) {
         var widgetText = getString(R.string.skip)
-        if(!alarmLabel.isNullOrBlank()){
+        if (!alarmLabel.isNullOrBlank()) {
             widgetText += "\n" + alarmLabel
         }
-        widgetTextView.setText(widgetText)
+        val widgetTextView = widgetFloatingView.findViewById<TextView>(R.id.text_widget)
+        widgetTextView.text = widgetText
+    }
 
-        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        windowManager.apply {
-            addView(widgetFloatingView, layoutParams)
-        }
-        widgetFloatingView.visibility = View.VISIBLE
-
+    private fun setupTouchAndDrag(
+        layoutParams: WindowManager.LayoutParams,
+        alarmId: Int) {
         mGestureDetector = GestureDetectorCompat(
             this,
-            TouchAndScrollGestureListener(windowManager, layoutParams, widgetFloatingView, this, alarmId, widgetText)
+            TouchAndScrollGestureListener(windowManager, layoutParams, widgetFloatingView, this, alarmId, "")
         )
 
         widgetFloatingView.setOnTouchListener { _, event ->
             mGestureDetector.onTouchEvent(event)
             true
         }
-
-        return START_STICKY
     }
 
     override fun onDestroy() {
