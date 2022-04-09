@@ -19,11 +19,11 @@ App behaviour
 			|- rescheduleTransition
 			|- enableTransition
 
-ToDo list
+To-Do list
     [X] Show floating dummy widget when skip interval is reached
     [X] Hide floating dummy widget when the alarm is fired
     [X] Perform skip next alarm action by "clicking" in the widget
-    [ ] Allow the user to move the widget
+    [X] Allow the user to move the widget
     [ ] Allow the user to close the widget without skipping the alarm
     [ ] Refactor my code
         > TESTS!!!
