@@ -1,5 +1,6 @@
 References and resources
 	> floating widget: https://www.youtube.com/watch?v=UwnhGkahoao
+	> gesture detector: https://developer.android.com/training/gestures/detector.html#detect
 
 App behaviour
 	State machine - states tree
