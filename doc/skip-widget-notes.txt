@@ -25,8 +25,9 @@ To-Do list
     [X] Perform skip next alarm action by "clicking" in the widget
     [X] Allow the user to move the widget
     [ ] Allow the user to close the widget without skipping the alarm
+    [ ] Show skip notification in the lock screen
+    [ ] Show semi-transparent widget
     [ ] Refactor my code
         > TESTS!!!
         > Alarm label in skip widget hack
         > Intents use
-    [ ] Show skip notification in the lock screen
