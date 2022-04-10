@@ -23,7 +23,7 @@ class SkipAlarmWidgetService : Service() {
     }
 
     private lateinit var widgetFloatingView: View
-    private lateinit var closeImageView: ImageView
+    private lateinit var closeIconView: ImageView
     private lateinit var windowManager: WindowManager
     private var layoutFlag = 0
     private lateinit var mGestureDetector: GestureDetectorCompat
@@ -41,21 +41,7 @@ class SkipAlarmWidgetService : Service() {
 
         val layoutParams = setupLayoutParams()
         setupWidgetView(layoutParams)
-
-        closeImageView = ImageView(this)
-        closeImageView.setImageResource(R.drawable.ic_baseline_delete_24)
-        closeImageView.visibility = View.INVISIBLE
-        val height = windowManager.defaultDisplay.height
-        val width = windowManager.defaultDisplay.width
-        val closeImageViewParams = WindowManager.LayoutParams(
-            140,
-            140,
-            layoutFlag,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT)
-        closeImageViewParams.gravity = Gravity.BOTTOM or Gravity.CENTER
-        closeImageViewParams.y = 100
-        windowManager.addView(closeImageView, closeImageViewParams)
+        setupCloseIconView()
 
         val alarmLabel = intent!!.getStringExtra(Intents.EXTRA_LABEL)
         setupWidgetText(alarmLabel)
@@ -64,6 +50,24 @@ class SkipAlarmWidgetService : Service() {
         setupTouchAndDrag(layoutParams, alarmId)
 
         return START_STICKY
+    }
+
+    private fun setupCloseIconView() {
+        closeIconView = ImageView(this)
+        closeIconView.setImageResource(R.drawable.ic_baseline_delete_24)
+        closeIconView.visibility = View.INVISIBLE
+        val height = windowManager.defaultDisplay.height
+        val width = windowManager.defaultDisplay.width
+        val closeIconParams = WindowManager.LayoutParams(
+            140,
+            140,
+            layoutFlag,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        )
+        closeIconParams.gravity = Gravity.BOTTOM or Gravity.CENTER
+        closeIconParams.y = 100
+        windowManager.addView(closeIconView, closeIconParams)
     }
 
     private fun setupWidgetView(layoutParams: WindowManager.LayoutParams) {
@@ -103,7 +107,7 @@ class SkipAlarmWidgetService : Service() {
         alarmId: Int) {
         mGestureDetector = GestureDetectorCompat(
             this,
-            TouchAndScrollGestureListener(windowManager, layoutParams, widgetFloatingView, this, alarmId, "", closeImageView)
+            TouchAndScrollGestureListener(windowManager, layoutParams, widgetFloatingView, this, alarmId, "", closeIconView)
         )
 
         widgetFloatingView.setOnTouchListener { _, event ->
@@ -111,7 +115,7 @@ class SkipAlarmWidgetService : Service() {
 
             when(event.action){
                 MotionEvent.ACTION_UP->{
-                    closeImageView.visibility = View.GONE
+                    closeIconView.visibility = View.GONE
                     false
                 }
             }
@@ -124,8 +128,8 @@ class SkipAlarmWidgetService : Service() {
         super.onDestroy()
         if (widgetFloatingView != null)
             windowManager.removeView(widgetFloatingView)
-        if(closeImageView != null)
-            windowManager.removeView(closeImageView)
+        if(closeIconView != null)
+            windowManager.removeView(closeIconView)
     }
 }
 
