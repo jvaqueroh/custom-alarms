@@ -8,6 +8,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.view.*
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.GestureDetectorCompat
 import com.better.alarm.R
@@ -22,6 +23,7 @@ class SkipAlarmWidgetService : Service() {
     }
 
     private lateinit var widgetFloatingView: View
+    private lateinit var closeImageView: ImageView
     private lateinit var windowManager: WindowManager
     private var layoutFlag = 0
     private lateinit var mGestureDetector: GestureDetectorCompat
@@ -39,6 +41,21 @@ class SkipAlarmWidgetService : Service() {
 
         val layoutParams = setupLayoutParams()
         setupWidgetView(layoutParams)
+
+        closeImageView = ImageView(this)
+        closeImageView.setImageResource(R.drawable.ic_baseline_delete_24)
+        closeImageView.visibility = View.INVISIBLE
+        val height = windowManager.defaultDisplay.height
+        val width = windowManager.defaultDisplay.width
+        val closeImageViewParams = WindowManager.LayoutParams(
+            140,
+            140,
+            layoutFlag,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT)
+        closeImageViewParams.gravity = Gravity.BOTTOM or Gravity.CENTER
+        closeImageViewParams.y = 100
+        windowManager.addView(closeImageView, closeImageViewParams)
 
         val alarmLabel = intent!!.getStringExtra(Intents.EXTRA_LABEL)
         setupWidgetText(alarmLabel)
@@ -86,11 +103,19 @@ class SkipAlarmWidgetService : Service() {
         alarmId: Int) {
         mGestureDetector = GestureDetectorCompat(
             this,
-            TouchAndScrollGestureListener(windowManager, layoutParams, widgetFloatingView, this, alarmId, "")
+            TouchAndScrollGestureListener(windowManager, layoutParams, widgetFloatingView, this, alarmId, "", closeImageView)
         )
 
         widgetFloatingView.setOnTouchListener { _, event ->
             mGestureDetector.onTouchEvent(event)
+
+            when(event.action){
+                MotionEvent.ACTION_UP->{
+                    closeImageView.visibility = View.GONE
+                    false
+                }
+            }
+
             true
         }
     }
@@ -99,6 +124,8 @@ class SkipAlarmWidgetService : Service() {
         super.onDestroy()
         if (widgetFloatingView != null)
             windowManager.removeView(widgetFloatingView)
+        if(closeImageView != null)
+            windowManager.removeView(closeImageView)
     }
 }
 
@@ -108,7 +135,8 @@ private class TouchAndScrollGestureListener(
     val widgetFloatingView: View,
     val context: Context,
     val alarmId: Int,
-    val widgetText: String
+    val widgetText: String,
+    val closeImageView: ImageView
 ) :
     GestureDetector.SimpleOnGestureListener() {
     private var initialX: Int = 0
@@ -121,6 +149,9 @@ private class TouchAndScrollGestureListener(
         initialY = layoutParams.y
         initialTouchX = e.rawX
         initialTouchY = e.rawY
+
+        closeImageView.visibility = View.VISIBLE
+
         return true
     }
 
