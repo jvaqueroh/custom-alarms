@@ -1,6 +1,10 @@
 References and resources
 	> floating widget: https://www.youtube.com/watch?v=UwnhGkahoao
 	> gesture detector: https://developer.android.com/training/gestures/detector.html#detect
+	> IllegalStateException not allowed to start service intent, app is in background: 
+		* https://stackoverflow.com/a/46445436
+		* https://developer.android.com/about/versions/oreo/android-8.0-changes#back-all
+		* https://developer.android.com/about/versions/oreo/background
 
 App behaviour
 	State machine - states tree
