@@ -27,8 +27,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.text.format.DateFormat
-import com.better.alarm.CHANNEL_ID
-import com.better.alarm.R
+import com.better.alarm.*
 import com.better.alarm.background.Event
 import com.better.alarm.background.SkipAlarmWidgetService
 import com.better.alarm.configuration.Prefs
@@ -36,10 +35,9 @@ import com.better.alarm.configuration.Store
 import com.better.alarm.interfaces.IAlarmsManager
 import com.better.alarm.interfaces.Intents
 import com.better.alarm.interfaces.PresentationToModelIntents
-import com.better.alarm.notificationBuilder
 import com.better.alarm.presenter.TransparentActivity
 import com.better.alarm.util.subscribeForever
-import java.util.Calendar
+import java.util.*
 
 /**
  * Glue class: connects AlarmAlert IntentReceiver to AlarmAlert activity. Passes through Alarm ID.
@@ -183,7 +181,9 @@ class BackgroundNotifications(
                 .also { intent ->
                     intent.putExtra(Intents.EXTRA_ID, id)
                     intent.putExtra(Intents.EXTRA_LABEL, label)
-                    mContext.startService(intent)
+                    //https://developer.android.com/about/versions/oreo/background
+                    oreo { mContext.startForegroundService(intent) }
+                    preOreo { mContext.startService(intent) }
                     mContext.bindService(intent, skipAlarmWidgetServiceConnection, Context.BIND_AUTO_CREATE)
                 }
         }
