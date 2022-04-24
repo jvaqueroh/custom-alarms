@@ -11,11 +11,10 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.GestureDetectorCompat
-import com.better.alarm.R
+import com.better.alarm.*
+import com.better.alarm.alert.BackgroundNotifications
 import com.better.alarm.interfaces.Intents
 import com.better.alarm.interfaces.PresentationToModelIntents
-import com.better.alarm.oreo
-import com.better.alarm.preOreo
 
 class SkipAlarmWidgetService : Service() {
     private val binder = LocalBinder()
@@ -35,10 +34,6 @@ class SkipAlarmWidgetService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        //https://developer.android.com/about/versions/oreo/background
-        //TODO set a meaning-notification id and the proper Notification
-        startForeground(99, Notification())
-
         oreo{ layoutFlag = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY }
         preOreo { layoutFlag = WindowManager.LayoutParams.TYPE_PHONE }
 
@@ -51,6 +46,14 @@ class SkipAlarmWidgetService : Service() {
 
         val alarmId = intent.getIntExtra(Intents.EXTRA_ID, -1)
         setupTouchAndDrag(layoutParams, alarmId)
+
+        //https://developer.android.com/about/versions/oreo/background
+        //TODO set proper Notification title and extract the base id to a constant
+        val skipWidgetNotification = applicationContext.notificationBuilder(CHANNEL_ID){
+            setContentTitle("")
+            setSmallIcon(R.drawable.stat_notify_alarm)
+        }
+        startForeground(4000 + alarmId, skipWidgetNotification)
 
         return START_STICKY
     }
