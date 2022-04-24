@@ -90,7 +90,6 @@
         <!-- Service for allow the user skip the next alarm -->
         <service
             android:name=".background.SkipAlarmWidgetService"
-            android:description="Service for allow the user skip the next alarm"
             android:enabled="true" />
 
         <!-- Model -->
