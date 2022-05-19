@@ -24,9 +24,11 @@ App behaviour
 			|- enableTransition
 
 To-Do list
+	[ ] Draw "Dismiss" button with different color
     [X] Show floating dummy widget when skip interval is reached
     [X] Hide floating dummy widget when the alarm is fired
-    [X] Perform skip next alarm action by "clicking" in the widget
+    [*] Perform skip next alarm action by "clicking" in the widget
+		> bug: double widget appears when activating device from standby and crash report after tap
     [X] Allow the user to move the widget
     [ ] Allow the user to close the widget without skipping the alarm
     [ ] Show skip notification in the lock screen
